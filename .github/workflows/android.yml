@@ -1,8 +1,6 @@
-name: Android CI
+name: Build JumpMaster APK
 
 on:
-  push:
-    branches: [ "main", "master" ] # 当代码提交时触发
   workflow_dispatch: # 允许你手动点击按钮触发编译
 
 jobs:
@@ -16,17 +14,19 @@ jobs:
     - name: 设置 Java 环境
       uses: actions/setup-java@v4
       with:
-        distribution: 'temurin'
-        java-version: '17' # 大多数现代安卓项目使用 Java 17
+        distribution: 'zulu'
+        java-version: '17' # 现代 Kotlin 项目的标准配置
 
     - name: 赋予 Gradle 执行权限
       run: chmod +x ./gradlew
 
-    - name: 开始编译 APK
-      run: ./gradlew assembleDebug
+    - name: 开始编译 Release 版 APK
+      # 这里完全使用了你截图中作者要求的构建命令
+      run: ./gradlew assembleRelease
 
     - name: 上传生成的 APK
       uses: actions/upload-artifact@v4
       with:
-        name: my-app-apk
-        path: app/build/outputs/apk/debug/*.apk
+        name: JumpMaster-Release-APK
+        # 对应作者说明中的生成路径：app/build/outputs/apk/release/
+        path: app/build/outputs/apk/release/*.apk
